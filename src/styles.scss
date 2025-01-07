@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+    margin: 0;
+    padding: 0;
+}
+.nb-theme-default nb-layout .layout .layout-container .content .columns nb-layout-column {
+    padding: 0 !important; 
+    height: auto !important;
+}
+.nb-theme-default nb-card.size-large {
+    height: auto !important;
+}
+
+/* margin configs */
+.mg-top-16 {
+    margin-top: 16px !important;
+}
+.mg-top-32 {
+    margin-top: 32px !important;
+}

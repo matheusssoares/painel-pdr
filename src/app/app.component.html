@@ -1,23 +1,22 @@
 @if (!isLoggedIn) {
-  <nb-layout class="login-nb">
-    <nb-layout-column>
-      <router-outlet></router-outlet>
-    </nb-layout-column>
-  </nb-layout>
-  } @else {
-  <nb-layout>
-    <nb-layout-header [fixed]="true">
-        <app-header></app-header>
-    </nb-layout-header>
-    <nb-sidebar>
-      <app-menu></app-menu>
-    </nb-sidebar>
-    <nb-layout-column>
-      <router-outlet></router-outlet>
-    </nb-layout-column>
-    <nb-layout-footer fixed="">
-      Desenvolvido por: &nbsp; <strong> Norte Script</strong>
-    </nb-layout-footer>
-  </nb-layout>
-  }
-  
+<nb-layout>
+  <nb-layout-column class="content-layout">
+    <router-outlet></router-outlet>
+  </nb-layout-column>
+</nb-layout>
+} @else {
+<nb-layout>
+  <nb-layout-header [fixed]="true">
+    <app-header></app-header>
+  </nb-layout-header>
+  <nb-sidebar>
+    <app-menu></app-menu>
+  </nb-sidebar>
+  <nb-layout-column>
+    <router-outlet></router-outlet>
+  </nb-layout-column>
+  <nb-layout-footer fixed="">
+    Desenvolvido por: &nbsp; <strong> Norte Script</strong>
+  </nb-layout-footer>
+</nb-layout>
+}
