@@ -10,9 +10,11 @@
     >
       <nb-card-body>
         <div class="content">
+          @if(logo) {
           <div class="logo">
             <img [src]="logo" alt="Logo" />
           </div>
+          }
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <nb-form-field class="center-form">
               <nb-icon nbSuffix icon="email-outline" pack="eva"></nb-icon>
@@ -35,6 +37,7 @@
                 nbInput
                 formControlName="password"
                 type="button"
+                autocomplete="current-password"
               />
               <button
                 type="button"
@@ -61,7 +64,7 @@
               nbButton
               hero
               fullWidth=""
-              status="danger"
+              status="success"
               type="submit"
               [disabled]="!form.valid"
             >

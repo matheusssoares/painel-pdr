@@ -1,18 +1,25 @@
 .container-header {
-    display: flex;
-    width: 100%;
-   align-items: center;
-   margin-left: -20px;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-left: -20px;
+
+  .logo {
+    margin-left: 50px;
+    img {
+      width: 200px;
+      height: auto;
+    }
+  }
 }
 
 .right-float {
-    display: block;
-    //background-color: black;
-    position: absolute;
-    width: 100%;
+  display: block;
+  //background-color: black;
+  position: absolute;
+  width: 100%;
 
-    .actions {
-        float: right;
-    }
+  .actions {
+    float: right;
+  }
 }
-

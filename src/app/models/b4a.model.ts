@@ -1,4 +1,4 @@
-export interface B4aModel {
+export interface B4aModelConfig {
     id: string;
     nameProject: string;
     version: string;

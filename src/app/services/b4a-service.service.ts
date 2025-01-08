@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../environment';
-import { B4aModel } from '../models/b4a.model';
+import { B4aModelConfig } from '../models/b4a.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,6 @@ export class B4aServiceService {
         'X-Parse-REST-API-Key': environment.b4appRestApiKey
       }
     }
-    return this.httpClient.get<B4aModel>(`${environment.baseUrl}parse/classes/configProject/${environment.idProject}`, headerOptions);
+    return this.httpClient.get<B4aModelConfig>(`${environment.baseUrl}parse/classes/configProject/${environment.idProject}`, headerOptions);
   }
 }

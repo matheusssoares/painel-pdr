@@ -1,16 +1,22 @@
 <div class="container-header">
+  @if(logo) {
   <div class="logo">
     <div class="logo-container">
       <img [src]="logo" alt="Logo empresa" />
     </div>
   </div>
+  }
 
   <div class="right-float">
     <div class="actions">
       <nb-actions size="medium">
         <nb-action icon="settings-outline"></nb-action>
-        <nb-action icon="bell-outline" badgeText="99+"
-        badgeStatus="danger" badgePosition="top right"></nb-action>
+        <nb-action
+          icon="bell-outline"
+          badgeText="99+"
+          badgeStatus="danger"
+          badgePosition="top right"
+        ></nb-action>
         <nb-action (click)="logout(dialog)" icon="power-outline"></nb-action>
       </nb-actions>
     </div>
@@ -18,13 +24,12 @@
 </div>
 
 <ng-template #dialog let-data let-ref="dialogRef">
-    <nb-card>
-      <nb-card-header>Atenção!</nb-card-header>
-      <nb-card-body>Você deseja se desconectar?</nb-card-body>
-      <nb-card-footer>
-        <button status="danger" nbButton (click)="yes()">Confirmar</button>
-        <button nbButton (click)="ref.close()">Cancelar</button>
-      </nb-card-footer>
-    </nb-card>
-  </ng-template>
-  
+  <nb-card>
+    <nb-card-header>Atenção!</nb-card-header>
+    <nb-card-body>Você deseja se desconectar?</nb-card-body>
+    <nb-card-footer>
+      <button status="danger" nbButton (click)="yes()">Confirmar</button>
+      <button nbButton (click)="ref.close()">Cancelar</button>
+    </nb-card-footer>
+  </nb-card>
+</ng-template>

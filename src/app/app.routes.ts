@@ -13,4 +13,13 @@ export const routes: Routes = [
     component: LoginComponent,
     title: `Papo de Rifa - Login`,
   },
+  {
+    path: 'admin/dashboard',
+    //canActivate: [AuthService],
+    loadComponent: () =>
+      import('./pages/admin/dashboard/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+    title: `Papo de Rifa - Dashboard`,
+  },
 ];
