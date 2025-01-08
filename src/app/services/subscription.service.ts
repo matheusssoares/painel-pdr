@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -13,17 +14,16 @@ export class SubscriptionService {
   private auth = inject(AuthService);
 
   public isChangeAuth = signal<boolean>(false);
-  constructor() {}
-
-  /* getIsLoggedIn(): BehaviorSubject<boolean> {
-    console.log(this.isChangeAuth());
-    
-    return this.isLoggedIn;
-  } */
+  constructor(
+    private router: Router
+  ) {}
 
   async getIsLoggedIn() {
     const userLogged =  await this.auth.getCurrentUserApi();
-    this.setChangeAuth(userLogged);    
+    this.setChangeAuth(userLogged);   
+    if(!userLogged) {
+      this.router.navigate(['login']);
+    }
   }
 
   setIsLoggedIn(value: boolean) {
