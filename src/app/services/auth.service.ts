@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import {
+  Router
+} from '@angular/router';
 import { environment } from '../environment';
 import { UserModel } from '../models/user.model';
 import { LocalStorageService } from './local-storage.service';
@@ -15,7 +16,7 @@ export class AuthService {
     private localStorageService: LocalStorageService,
     private router: Router
   ) {}
-  canActivate(
+  /* canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
@@ -27,7 +28,7 @@ export class AuthService {
         this.router.navigate(['login']);
       }
     });
-  }
+  } */
   login(email: string, password: string) {
     const headerOptions = {
       headers: {
@@ -56,7 +57,7 @@ export class AuthService {
       'X-Parse-Application-Id': environment.b4appApplicationId,
       'X-Parse-REST-API-Key': environment.b4appRestApiKey,
     };
-    
+
     return this.httpClient.post(
       `${environment.baseUrl}parse/functions/logout`,
       {}, // O corpo da requisição deve ser vazio para logout
@@ -64,27 +65,38 @@ export class AuthService {
     );
   }
 
-  getCurrentUserApi(): boolean {
-    const user = this.localStorageService.getItem('user');
-    let sessionToken;
-    if(user) {
-      sessionToken = JSON.parse(user).sessionToken;
-    }
-    const headers = {
-      'X-Parse-Application-Id': environment.b4appApplicationId,
-      'X-Parse-REST-API-Key': environment.b4appRestApiKey,
-      'X-Parse-Session-Token': sessionToken,
-    };
-    let result = false;
-    this.httpClient.post<UserModel>(
-      `${environment.baseUrl}parse/functions/getCurrentUser`,
-      {},
-      {headers}
-    ).subscribe((res) => {
-      result = true;
-    }, (error) => {
-      result = false;
+ async getCurrentUserApi(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const user = this.localStorageService.getItem('user');
+      let sessionToken;
+      if (user) {
+        sessionToken = JSON.parse(user).sessionToken;
+      }
+      if (!sessionToken) {
+        resolve(false);
+      } else {
+        const headers = {
+          'X-Parse-Application-Id': environment.b4appApplicationId,
+          'X-Parse-REST-API-Key': environment.b4appRestApiKey,
+          'X-Parse-Session-Token': sessionToken,
+        };
+
+        this.httpClient
+          .post<UserModel>(
+            `${environment.baseUrl}parse/functions/getCurrentUser`,
+            {},
+            { headers }
+          )
+          .subscribe(
+            (res) => {
+              resolve(!!res);
+            },
+            (error) => {
+              reject(error);
+              resolve(false);
+            }
+          );
+      }
     });
-    return result;
   }
 }

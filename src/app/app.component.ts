@@ -22,23 +22,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private localService = inject(LocalStorageService);
   private sub = inject(SubscriptionService);
   private subscriptions: Array<Subscription> = [];
-  private isClickLogout!: boolean;
-  constructor(private templateService: TemplateService) {
-   
+  constructor() {
+    
   }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.getConfig();
-
-    const sub = this.sub.getIsLoggedIn().subscribe((res) => {
-      if (res) {
-        this.isLoggedIn = true;
-      } else {
-        this.isLoggedIn = false;
-      }
-    });
-
-    this.subscriptions.push(sub);
+    this.sub.getIsLoggedIn();
   }
 
   getConfig() {
