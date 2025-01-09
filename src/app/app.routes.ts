@@ -15,11 +15,18 @@ export const routes: Routes = [
   },
   {
     path: 'admin/dashboard',
-    //canActivate: [AuthService],
     loadComponent: () =>
       import('./pages/admin/dashboard/dashboard.component').then(
         (m) => m.DashboardComponent
       ),
     title: `Papo de Rifa - Dashboard`,
   },
+  {
+    path: 'admin/raffles',
+    loadComponent: () =>
+      import('./pages/admin/raffles/raffles.component').then(
+        (m) => m.RafflesComponent
+      ),
+    title: `Papo de Rifa - Campanhas`,
+  }
 ];

@@ -1,0 +1,64 @@
+<p-table
+  #dt1
+  dataKey="id"
+  [value]="items"
+  styleClass="p-datatable-striped"
+  [tableStyle]="{ 'min-width': '50rem' }"
+  [paginator]="true"
+  [rows]="rows"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} registros"
+  [globalFilterFields]="globalFilterFields"
+>
+  <ng-template pTemplate="caption">
+    <div class="flex">
+      <span class="p-input-icon-left ml-auto">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="applyFilterGlobal($event, 'contains')"
+          [placeholder]="placeholder"
+        />
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      @for (item of itemsHead; track $index) {
+      <th [pSortableColumn]="item.field">
+        {{ item.name }} <p-sortIcon [field]="item.field"></p-sortIcon>
+      </th>
+      }
+      <th>Ações</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body">
+    @for (item of items; track $index) {
+    <tr>
+      @for (head of itemsHead; track $index) {
+      <td>{{ item[head.field] }}</td>
+      }
+
+      <td>
+        <span>
+          <button (click)="details(items)" nbButton ghost status="primary">
+            <nb-icon icon="edit-2-outline"></nb-icon>
+          </button>
+        </span>
+        <span>
+          <button
+            (click)="deleteData(items, dialog)" 
+            nbButton
+            ghost
+            status="danger"
+          >
+            <nb-icon icon="trash-2-outline"></nb-icon>
+          </button>
+        </span>
+      </td>
+    </tr>
+    }
+  </ng-template>
+</p-table>

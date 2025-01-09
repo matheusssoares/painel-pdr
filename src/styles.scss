@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
 * {
     margin: 0;
     padding: 0;
@@ -10,10 +12,18 @@
 .nb-theme-default nb-card.size-large {
     height: auto !important;
 }
+.p-paginator .p-dropdown .p-dropdown-label {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
 
 /* margin configs */
 .mg-top-16 {
     margin-top: 16px !important;
+}
+.mg-left-16 {
+    margin-left: 16px !important;
 }
 .mg-top-32 {
     margin-top: 32px !important;
@@ -22,4 +32,38 @@
 /* border confis */
 .border-none {
     border: none !important;
+}
+
+/* config head pages admin */
+.card-head-pages {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    h4 {
+        font-size: 16px;
+    }
+}
+
+.container-table {
+    padding: 16px;
+}
+
+.input-search {
+    padding: 16px;
+    margin: 16px;
+}
+
+.padding-16 {
+    padding: 16px;
+}
+
+.h-table th {
+    padding: 10px !important;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
