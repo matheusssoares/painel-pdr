@@ -62,7 +62,7 @@
               <img class="img-table" [src]="items.image.url" alt="" />
             </td>
             <td class="uppercase">{{ items.name }}</td>
-            <td>{{ items.price }}</td>
+            <td>{{ items.price | currency : 'BRL' }}</td>
             <td>{{ items.status }}</td>
             <td>{{ items.status }}</td>
             <td>

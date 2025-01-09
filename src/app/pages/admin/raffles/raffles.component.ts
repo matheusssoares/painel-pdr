@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { PrimeNgModule } from '../../../modules/primeng.module';
@@ -6,7 +7,7 @@ import { B4aServiceService } from '../../../services/b4a-service.service';
 
 @Component({
   selector: 'app-raffles',
-  imports: [SharedModule, PrimeNgModule],
+  imports: [SharedModule, PrimeNgModule, CommonModule],
   templateUrl: './raffles.component.html',
   styleUrl: './raffles.component.scss',
 })
