@@ -67,3 +67,32 @@
     align-items: center;
     justify-content: center;
 }
+
+.badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 8px;
+}
+.badge-success {    
+    background-color: #2CE69B;
+    color: #fff;
+}
+.badge-warning {    
+    background-color: #ffc107;
+    color: #fff;
+}
+.badge-dark {    
+    background-color: #343a40;
+    color: #fff;
+}
+.badge-danger {    
+    background-color: #FF3D71;
+    color: #fff;
+}
+.pointer {
+    cursor: pointer;
+}

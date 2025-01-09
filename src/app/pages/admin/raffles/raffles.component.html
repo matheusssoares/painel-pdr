@@ -1,85 +1,97 @@
-<nb-layout-column>
-  <nb-card class="container-card">
-    <nb-card-header class="card-head-pages">
-      <h4>CAMPANHAS</h4>
-      <button nbButton status="success">
-        <nb-icon icon="plus-outline"></nb-icon> Adicionar
-      </button>
-    </nb-card-header>
+<nb-layout>
+  <nb-layout-column>
+    <nb-card class="container-card">
+      <nb-card-header class="card-head-pages">
+        <h4>MINHAS CAMPANHAS</h4>
+        <button (click)="openModal()" nbButton status="success">
+          <nb-icon icon="plus-outline"></nb-icon> Adicionar
+        </button>
+      </nb-card-header>
 
-    <!-- DISPLAY TABLE WITH DATA PERSONALIZATION -->
-    <div class="container-table">
-      <p-table
-        #dt1
-        dataKey="id"
-        [value]="items"
-        styleClass="p-datatable-striped"
-        [tableStyle]="{ 'min-width': '75rem' }"
-        [paginator]="true"
-        [rows]="15"
-        [showCurrentPageReport]="true"
-        [rowsPerPageOptions]="[15, 30, 45]"
-        currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} registros"
-        [globalFilterFields]="['name', 'price', 'whatsApp', 'status']"
-      >
-        <ng-template pTemplate="caption" class="caption">
-          <div class="flex">
-            <span class="p-input-icon-left ml-auto">
-              <i class="pi pi-search"></i>
-              <input
-                class="input-search"
-                pInputText
-                type="text"
-                (input)="applyFilterGlobal($event, 'contains')"
-                placeholder="Pesquisar"
-              />
-            </span>
-          </div>
-        </ng-template>
-        <ng-template pTemplate="header">
-          <tr class="mg-top-16 padding-16 h-table">
-            <th pSortableColumn="">
-              CAMPANHAS <p-sortIcon field=""></p-sortIcon>
-            </th>
-            <th pSortableColumn="name">
-              TÍTULO <p-sortIcon field="name"></p-sortIcon>
-            </th>
-            <th pSortableColumn="price">
-              PREÇO <p-sortIcon field="price"></p-sortIcon>
-            </th>
-            <th pSortableColumn="price">
-              % DE VENDAS <p-sortIcon field="price"></p-sortIcon>
-            </th>
-            <th pSortableColumn="status">
-              STATUS <p-sortIcon field="status"></p-sortIcon>
-            </th>
-            <th>AÇÕES</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-items>
-          <tr>
-            <td class="mg-left-16">
-              <img class="img-table" [src]="items.image.url" alt="" />
-            </td>
-            <td class="uppercase">{{ items.name }}</td>
-            <td>{{ items.price | currency : 'BRL' }}</td>
-            <td>{{ items.status }}</td>
-            <td>{{ items.status }}</td>
-            <td>
-              <span>
-                <button nbButton ghost status="primary">
-                  <nb-icon icon="edit-2-outline"></nb-icon>
-                </button>
+      <!-- DISPLAY TABLE WITH DATA PERSONALIZATION -->
+      <div class="container-table">
+        <p-table
+          #dt1
+          dataKey="id"
+          [value]="items"
+          styleClass="p-datatable-striped"
+          [tableStyle]="{ 'min-width': '75rem' }"
+          [paginator]="true"
+          [rows]="15"
+          [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[15, 30, 45]"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} registros"
+          [globalFilterFields]="['name', 'price', 'whatsApp', 'status']"
+        >
+          <ng-template pTemplate="caption" class="caption">
+            <div class="flex">
+              <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input
+                  class="input-search"
+                  pInputText
+                  type="text"
+                  (input)="applyFilterGlobal($event, 'contains')"
+                  placeholder="Pesquisar"
+                />
               </span>
-              <span>
-                <button nbButton ghost status="danger">
-                  <nb-icon icon="trash-2-outline"></nb-icon>
-                </button>
-              </span>
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </div>
-  </nb-card>
-</nb-layout-column>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr class="mg-top-16 padding-16 h-table">
+              <th pSortableColumn="">
+                CAMPANHAS <p-sortIcon field=""></p-sortIcon>
+              </th>
+              <th pSortableColumn="name">
+                TÍTULO <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">
+                PREÇO <p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="price">
+                % DE VENDAS <p-sortIcon field="price"></p-sortIcon>
+              </th>
+              <th pSortableColumn="status">
+                STATUS <p-sortIcon field="status"></p-sortIcon>
+              </th>
+              <th>AÇÕES</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-items>
+            <tr>
+              <td class="mg-left-16">
+                <img class="img-table" [src]="items.image.url" alt="" />
+              </td>
+              <td class="uppercase">{{ items.name }}</td>
+              <td>{{ items.price | currency : "BRL" }}</td>
+              <td>{{ items.status }}</td>
+              <td>
+                @switch (items.status) { @case (0) {
+                <span class="badge badge-success">ATIVA</span>
+                } @case (1) {
+                <span class="badge badge-warning">VENDAS FINALIZADAS</span>
+                } @case (2) {
+                <span class="badge badge-dark">CONCLUIDA</span>
+                } @case (3) {
+                <span class="badge badge-danger">CANCELADA</span>
+                } }
+              </td>
+              <td>
+                <span>
+                  <button nbButton ghost status="primary">
+                    <nb-icon icon="edit-2-outline"></nb-icon>
+                  </button>
+                </span>
+                <span>
+                  <button nbButton ghost status="danger">
+                    <nb-icon icon="trash-2-outline"></nb-icon>
+                  </button>
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { NbDialogService } from '@nebular/theme';
 import { Table } from 'primeng/table';
 import { PrimeNgModule } from '../../../modules/primeng.module';
 import { SharedModule } from '../../../modules/shared.module';
 import { B4aServiceService } from '../../../services/b4a-service.service';
+import { FormRafflesComponent } from './form-raffles/form-raffles.component';
 
 @Component({
   selector: 'app-raffles',
@@ -16,7 +18,10 @@ export class RafflesComponent implements OnInit {
   private b4aService = inject(B4aServiceService);
   items: any[] = [];
   globalFilterFields: string[] = ['name', 'price', 'drawDate', 'status'];
-  constructor() {}
+
+  constructor(
+    private dialogService: NbDialogService,
+  ) {}
 
   ngOnInit(): void {
     this.b4aService.getRaffles().subscribe((res: any) => {
@@ -26,5 +31,13 @@ export class RafflesComponent implements OnInit {
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt?.filterGlobal($event.target.value, stringVal);
+  }
+
+  openModal() {
+    this.dialogService.open(FormRafflesComponent, {
+      autoFocus: true,
+      closeOnBackdropClick: true,
+      hasScroll: true,
+    });
   }
 }
