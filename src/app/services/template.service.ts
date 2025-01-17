@@ -1,14 +1,14 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
-import { NbToastrConfig, NbToastrService } from '@nebular/theme';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TemplateService {
   constructor(
     private cdr: ChangeDetectorRef,
-    private toastrService: NbToastrService
-  ) { }
+    private messageService: MessageService
+  ) {}
 
   detectChange() {
     try {
@@ -18,11 +18,16 @@ export class TemplateService {
     }
   }
 
-  showToastr(
-    description: string,
-    title: string,
-    config: Partial<NbToastrConfig>
+  showMessage(
+    severity: 'success' | 'error' | 'info' = 'success',
+    summary: string,
+    detail: string
   ) {
-    this.toastrService.show(description, title, config);
+    this.messageService.add({
+      severity: severity,
+      summary,
+      detail,
+      life: 2500,
+    });
   }
 }

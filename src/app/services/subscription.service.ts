@@ -11,17 +11,19 @@ export class SubscriptionService {
     false
   );
 
+  public updateTemplate: BehaviorSubject<string> = new BehaviorSubject<string>(
+    ''
+  );
+
   private auth = inject(AuthService);
 
   public isChangeAuth = signal<boolean>(false);
-  constructor(
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   async getIsLoggedIn() {
-    const userLogged =  await this.auth.getCurrentUserApi();
-    this.setChangeAuth(userLogged);   
-    if(!userLogged) {
+    const userLogged = await this.auth.getCurrentUserApi();
+    this.setChangeAuth(userLogged);
+    if (!userLogged) {
       this.router.navigate(['login']);
     }
   }
@@ -36,5 +38,13 @@ export class SubscriptionService {
 
   setChangeAuth(value: boolean) {
     this.isChangeAuth.set(value);
+  }
+
+  setUpdateTemplate(value: string) {
+    this.updateTemplate.next(value);
+  } 
+
+  getUpdateTemplate() {
+    return this.updateTemplate.asObservable();
   }
 }

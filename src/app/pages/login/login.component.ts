@@ -7,6 +7,8 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbGlobalPhysicalPosition } from '@nebular/theme';
+import { MessageService } from 'primeng/api';
+import { PrimeNgModule } from '../../modules/primeng.module';
 import { SharedModule } from '../../modules/shared.module';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
@@ -15,10 +17,10 @@ import { TemplateService } from '../../services/template.service';
 
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, ReactiveFormsModule],
+  imports: [SharedModule, ReactiveFormsModule, PrimeNgModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  providers: [TemplateService],
+  providers: [TemplateService, MessageService],
 })
 export class LoginComponent implements OnInit {
   private localService = inject(LocalStorageService);
@@ -48,7 +50,7 @@ export class LoginComponent implements OnInit {
   }
 
   getSection() {
-    const isLogged = this.authService.getCurrentUser();    
+    const isLogged = this.authService.getCurrentUser();
     if (isLogged) {
       this.sub.setIsLoggedIn(true);
       this.sub.setChangeAuth(true);
@@ -60,31 +62,33 @@ export class LoginComponent implements OnInit {
       this.loading = true;
 
       const { email, password } = this.form.value;
-      this.authService.login(email, password).subscribe(
-        (res: any) => {          
+      this.authService.login(email, password).subscribe({
+        next: (res: any) => {
           this.loading = false;
           if (res) {
             this.localService.setItem('user', res.result.data);
-            this.router.navigateByUrl('admin/dashboard');
             this.sub.setIsLoggedIn(true);
             this.sub.setChangeAuth(true);
+            this.templateService.detectChange();
+            this.templateService.showMessage(
+              'success',
+              'Parabéns!',
+              'Login efetuado com sucesso!'
+            );
+            this.router.navigateByUrl('admin/dashboard');
           }
         },
-        (error) => {
+        error: (error) => {
           console.log(error);
           this.loading = false;
           this.templateService.detectChange();
-          this.templateService.showToastr(
-            'Erro ao efetuar login.',
+          this.templateService.showMessage(
+            'error',
             'Putzzzz!',
-            {
-              duration: 3000,
-              position: this.physicalPositions.TOP_RIGHT,
-              status: 'danger',
-            }
+            'Problemas ao efetuar login.'
           );
-        }
-      );
+        },
+      });
     }
   }
 
@@ -97,5 +101,9 @@ export class LoginComponent implements OnInit {
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
+  }
+
+  resetPassword() {
+    this.templateService.showMessage('info', 'Olá', 'mundo!');
   }
 }

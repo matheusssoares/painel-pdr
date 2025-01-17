@@ -5,6 +5,8 @@ import {
   NbDialogService,
   NbGlobalPhysicalPosition,
 } from '@nebular/theme';
+import { MessageService } from 'primeng/api';
+import { PrimeNgModule } from '../../modules/primeng.module';
 import { SharedModule } from '../../modules/shared.module';
 import { AuthService } from '../../services/auth.service';
 import { LocalStorageService } from '../../services/local-storage.service';
@@ -14,10 +16,10 @@ import { TemplateService } from '../../services/template.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, PrimeNgModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
-  providers: [TemplateService],
+  providers: [TemplateService, MessageService],
 })
 export class HeaderComponent implements OnInit {
   private localService = inject(LocalStorageService);
@@ -50,14 +52,10 @@ export class HeaderComponent implements OnInit {
         if (this.dialogRef) {
           this.dialogRef.close();
         }
-        this.templateService.showToastr(
-          'Logout efetuado com sucesso.',
-          'Atenção!',
-          {
-            duration: 3000,
-            position: this.physicalPositions.TOP_RIGHT,
-            status: 'info',
-          }
+        this.templateService.showMessage(
+          'success',
+          'Parabéns!',
+          `Logout efetuado com sucesso!`
         );
         this.localService.removeItem('user');
         this.subsService.setIsLoggedIn(false);
@@ -67,11 +65,11 @@ export class HeaderComponent implements OnInit {
       },
       () => {
         this.templateService.detectChange();
-        this.templateService.showToastr('Erro ao efetuar logout.', 'Putzzzz!', {
-          duration: 3000,
-          position: this.physicalPositions.TOP_RIGHT,
-          status: 'danger',
-        });
+        this.templateService.showMessage(
+          'error',
+          'Putzzzz!',
+          'Problemas ao efetuar login.'
+        );
       }
     );
   }
