@@ -9,6 +9,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { PrimeNG } from 'primeng/config';
 import { Subscription } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -31,9 +32,13 @@ export class AppComponent implements OnInit, OnDestroy {
   private localService = inject(LocalStorageService);
   private sub = inject(SubscriptionService);
   private subscriptions: Array<Subscription> = [];
-  constructor() {}
+
+  constructor(
+    private primeng: PrimeNG
+  ) {}
 
   ngOnInit(): void {
+    this.primeng.ripple.set(true);
     this.getConfig();
     this.sub.getIsLoggedIn();
   }

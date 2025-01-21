@@ -1,16 +1,24 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { NgxLoadingModule } from 'ngx-loading';
-import { MessageService } from 'primeng/api';
+import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
 import { Editor } from 'primeng/editor';
 import { Table } from 'primeng/table';
+import Swal from 'sweetalert2';
 import { PhoneMaskDirective } from '../../../directives/phone-mask.directive';
 import { PrimeNgModule } from '../../../modules/primeng.module';
 import { SharedModule } from '../../../modules/shared.module';
@@ -32,13 +40,20 @@ interface UploadEvent {
     Editor,
     PhoneMaskDirective,
     NgxLoadingModule,
+    FormsModule,
   ],
   templateUrl: './raffles.component.html',
   styleUrl: './raffles.component.scss',
-  providers: [CurrencyPipe, TemplateService, MessageService],
+  providers: [
+    CurrencyPipe,
+    TemplateService,
+    MessageService,
+    ConfirmationService,
+  ],
 })
 export class RafflesComponent implements OnInit {
   @ViewChild('dt1') dt: Table | undefined;
+  @ViewChild('dt') cd: Confirmation | any;
   private b4aService = inject(B4aServiceService);
   private subService = inject(SubscriptionService);
   items: any[] = [];
@@ -60,24 +75,24 @@ export class RafflesComponent implements OnInit {
     { label: '20.000 bilhetes', value: `20000.json` },
     { label: '25.000 bilhetes', value: `25000.json` },
   ];
-  itemsAwards: string[] = [];
   prizeDraw: string[] = [
     'Diretamente com o Organizador',
     'Loteria Federal',
     'Sorteador Online',
   ];
-  visibleAwards: boolean = false;
-  @ViewChild('awardsInput') awardsInput: any;
   loading: boolean = false;
   private templateService = inject(TemplateService);
-  constructor(private fb: FormBuilder, private currencyPipe: CurrencyPipe) {}
+  constructor(
+    private fb: FormBuilder,
+    private currencyPipe: CurrencyPipe,
+    private cdr: ChangeDetectorRef,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
     this.initialForm();
 
     this.subService.getUpdateTemplate().subscribe((res: any) => {
-      console.log('res =>', res);
-
       if (res === 'update_template') {
         this.getData();
       }
@@ -89,10 +104,12 @@ export class RafflesComponent implements OnInit {
   getData() {
     this.b4aService.getRaffles().subscribe((res: any) => {
       this.items = res.result.data;
+      console.log(this.items);
     });
   }
   initialForm() {
     this.form = this.fb.group({
+      objectId: [null],
       name: ['', [Validators.required, Validators.minLength(6)]],
       price: ['', [Validators.required]],
       drawDate: ['', [Validators.required]],
@@ -111,7 +128,26 @@ export class RafflesComponent implements OnInit {
     this.dt?.filterGlobal($event.target.value, stringVal);
   }
 
-  openModal() {
+  openModal(isEdit: boolean = false, data: any = null) {
+    if (isEdit) {
+      this.form.reset();
+      this.headerModal = 'Editar campanha';
+      this.form.patchValue(data);
+      const dateTranform = new Date(data.drawDate.iso);
+      this.form.get('drawDate')?.setValue(format(dateTranform, 'yyyy-MM-dd'));
+      this.form.get('price')?.setValue(data.price.toString().replace('.', ','));
+      // Atualiza o valor do FormControl após um pequeno atraso
+      setTimeout(() => {
+        this.form.get('regulation')?.setValue(data.regulation);
+        this.cdr.detectChanges();
+      }, 400);
+
+      this.form.get('whatsApp')?.setValue(data.whatsApp + ` `);
+    } else {
+      this.form.reset();
+      this.initialForm();
+      this.headerModal = 'Adicionar campanha';
+    }
     this.visible = true;
   }
 
@@ -129,46 +165,67 @@ export class RafflesComponent implements OnInit {
     const drawDateString = data.drawDate;
     data.drawDate = parseISO(drawDateString);
     data.price = parseFloat(data.price.replace(',', '.'));
-    data.typeFile = this.uploadedFiles[0].type;
-    const strbase64 = await this.convertFileToBase64(this.uploadedFiles[0]);
-    data.image = `data:image/jpeg;base64,${strbase64}`;
-    data.awards = this.itemsAwards;
 
-    this.b4aService.createRaffle(data).subscribe({
-      next: (res: any) => {
-        if (res.result.success) {
-          this.templateService.showMessage(
-            'success',
-            'Parabéns!',
-            'Campanha criada com sucesso.'
-          );
+    if (this.uploadedFiles.length > 0) {
+      data.typeFile = this.uploadedFiles[0].type;
+      const strbase64 = await this.convertFileToBase64(this.uploadedFiles[0]);
+      data.image = `data:image/jpeg;base64,${strbase64}`;
+    }
 
-          this.subService.setUpdateTemplate('update_template');
-        } else {
-          this.templateService.showMessage(
-            'error',
-            'Putzzz!',
-            'Problemas internos ao criar campanha.'
-          );
-        }
-      },
-      error: (error: any) => {
-        console.log(error);
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
-  }
+    if (this.headerModal === 'Adicionar campanha') {
+      delete data.objectId;
+      this.b4aService.createRaffle(data, 'create').subscribe({
+        next: (res: any) => {
+          if (res.result.success) {
+            this.templateService.showMessage(
+              'success',
+              'Parabéns!',
+              'Campanha criada com sucesso.'
+            );
 
-  createAwards(value: any) {
-    this.visibleAwards = false;
-    this.itemsAwards.push(value.value);
-    this.awardsInput!.nativeElement!.value = '';
-  }
+            this.subService.setUpdateTemplate('update_template');
+          } else {
+            this.templateService.showMessage(
+              'error',
+              'Putzzz!',
+              'Problemas internos ao criar campanha.'
+            );
+          }
+        },
+        error: (error: any) => {
+          console.log(error);
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
+    } else {
+      this.b4aService.createRaffle(data, 'update').subscribe({
+        next: (res: any) => {
+          if (res.result.success) {
+            this.templateService.showMessage(
+              'success',
+              'Parabéns!',
+              'Campanha atualizada com sucesso.'
+            );
 
-  removeAwards(item: any) {
-    this.itemsAwards = this.itemsAwards.filter((i: any) => i !== item);
+            this.subService.setUpdateTemplate('update_template');
+          } else {
+            this.templateService.showMessage(
+              'error',
+              'Putzzz!',
+              'Problemas internos ao atualizar campanha.'
+            );
+          }
+        },
+        error: (error: any) => {
+          console.log(error);
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
+    }
   }
 
   formatValueWithBRL(event: any) {
@@ -196,6 +253,51 @@ export class RafflesComponent implements OnInit {
       };
       reader.onerror = (error) => reject(error);
       reader.readAsDataURL(file); // Lê o arquivo como URL de dados (Base64)
+    });
+  }
+
+  updateRegulationValue(value: any) {
+    this.form.get('regulation')?.setValue(value);
+  }
+
+  resetForm() {
+    this.form.reset();
+    this.initialForm();
+    this.visible = false;
+  }
+
+  openImage(url: string) {
+    window.open(url, '_blank');
+  }
+
+  deleteItem(item: string) {
+    const data = { objectId: item };
+    Swal.fire({
+      title: 'Atenção!',
+      text: 'Voce realmente deseja excluir essa campanha?',
+      showCancelButton: true,
+      confirmButtonText: 'Excluir',
+      cancelButtonText: `Cancelar`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.b4aService.deleteRaffle(data).subscribe((res: any) => {
+          if (res.result.success) {
+            this.templateService.showMessage(
+              'success',
+              'Parabéns!',
+              'Campanha excluida com sucesso.'
+            );
+
+            this.subService.setUpdateTemplate('update_template');
+          } else {
+            this.templateService.showMessage(
+              'error',
+              'Putzzz!',
+              'Problemas internos ao excluir campanha.'
+            );
+          }
+        });
+      }
     });
   }
 }

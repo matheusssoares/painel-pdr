@@ -54,7 +54,7 @@ export class B4aServiceService {
   }
 
   //create Raffle
-  createRaffle(data: any) {
+  createRaffle(data: any, action: 'create' | 'update') {
     const user = this.localStorageService.getItem('user');
     let sessionToken;
     if (user) {
@@ -67,8 +67,24 @@ export class B4aServiceService {
         'X-Parse-Session-Token': sessionToken,
       },
     };
+
+    let url = action === 'create' ? 'createRaffle' : 'updateRaffle';
     return this.httpClient.post(
-      `${environment.baseUrl}parse/functions/createRaffle`,
+      `${environment.baseUrl}parse/functions/${url}`,
+      data,
+      headerOptions
+    );
+  }
+
+  deleteRaffle(data: any) {
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey
+      },
+    };
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/deleteRaffle`,
       data,
       headerOptions
     );

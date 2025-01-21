@@ -4,7 +4,7 @@
     <nb-card class="container-card">
       <nb-card-header class="card-head-pages">
         <h4>MINHAS CAMPANHAS</h4>
-        <button (click)="openModal()" nbButton status="success">
+        <button (click)="openModal(false, null)" nbButton status="success">
           <nb-icon icon="plus-outline"></nb-icon> Adicionar
         </button>
       </nb-card-header>
@@ -61,7 +61,12 @@
           <ng-template pTemplate="body" let-items>
             <tr>
               <td class="mg-left-16">
-                <img class="img-table" [src]="items.image.url" alt="" />
+                <img
+                  (click)="openImage(items.image.url)"
+                  class="img-table"
+                  [src]="items.image.url"
+                  alt=""
+                />
               </td>
               <td class="uppercase">{{ items.name }}</td>
               <td>{{ items.price | currency : "BRL" }}</td>
@@ -79,12 +84,19 @@
               </td>
               <td>
                 <span>
-                  <button nbButton ghost status="primary">
+                  <button
+                    (click)="openModal(true, items)"
+                    nbButton
+                    ghost
+                    status="primary"
+                  >
                     <nb-icon icon="edit-2-outline"></nb-icon>
                   </button>
                 </span>
                 <span>
-                  <button nbButton ghost status="danger">
+                  <button 
+                   (click)="deleteItem(items.objectId)" 
+                  nbButton ghost status="danger">
                     <nb-icon icon="trash-2-outline"></nb-icon>
                   </button>
                 </span>
@@ -106,209 +118,152 @@
             [modal]="true"
             [style]="{ width: '45rem' }"
           >
-            <p-tabs value="0">
-              <p-tablist>
-                <p-tab value="0">DADOS GERAIS</p-tab>
-                <p-tab value="1">PRÊMIOS</p-tab>
-                <p-tab value="2">CONFIGURAÇÕES</p-tab>
-              </p-tablist>
-              <p-tabpanels>
-                <p-tabpanel value="0">
-                  <p-fileUpload
-                    (onSelect)="onUpload($event)"
-                    accept="image/*"
-                    maxFileSize="100000000"
-                    mode="advanced"
-                    [showUploadButton]="false"
-                  >
-                    <ng-template #empty>
-                      <div>
-                        Você pode arrastar e soltar a foto de sua campanha aqui.
-                      </div>
-                    </ng-template>
-                    <ng-template #content>
-                      @for (file of uploadedFiles; track $index) {
-                      <ul>
-                        @if (file.length) {
-                        <li>{{ file.name }} - {{ file.size }} bytes</li>
-                        }
-                      </ul>
-                      }
-                    </ng-template>
-                  </p-fileUpload>
+            <p-fileUpload
+              (onSelect)="onUpload($event)"
+              accept="image/*"
+              maxFileSize="100000000"
+              mode="advanced"
+              [showUploadButton]="false"
+            >
+              <ng-template #empty>
+                <div>
+                  Você pode arrastar e soltar a foto de sua campanha aqui.
+                </div>
+              </ng-template>
+              <ng-template #content>
+                @for (file of uploadedFiles; track $index) {
+                <ul>
+                  @if (file.length) {
+                  <li>{{ file.name }} - {{ file.size }} bytes</li>
+                  }
+                </ul>
+                }
+              </ng-template>
+            </p-fileUpload>
 
-                  <nb-form-field class="center-form mg-top-16">
-                    <label class="bold" for="regulation"
-                      >Título da campanha</label
-                    >
-                    <input
-                      placeholder="Título da campanha"
-                      size="large"
-                      fullWidth=""
-                      type="text"
-                      autofocus=""
-                      nbInput
-                      formControlName="name"
-                    />
-                  </nb-form-field>
-                  <div class="editor mg-top-16">
-                    <label class="bold" for="regulation">Regulamento</label>
-                    <p-editor
-                      formControlName="regulation"
-                      [style]="{ height: '100px' }"
-                    />
-                  </div>
+            <nb-form-field class="center-form mg-top-16">
+              <label class="bold" for="regulation">Título da campanha</label>
+              <input
+                placeholder="Título da campanha"
+                size="large"
+                fullWidth=""
+                type="text"
+                autofocus=""
+                nbInput
+                formControlName="name"
+              />
+            </nb-form-field>
+            <div class="editor mg-top-16">
+              <label class="bold" for="regulation">Regras e premiações</label>
+              <p-editor
+                formControlName="regulation"
+                [style]="{ height: '100px' }"
+              />
+            </div>
 
-                  <div class="flex-form mg-top-16">
-                    <nb-form-field class="center-form">
-                      <label class="bold" for="price">Preço</label>
-                      <input
-                        placeholder="Preço"
-                        size="large"
-                        fullWidth=""
-                        type="text"
-                        (input)="formatValueWithBRL($event)"
-                        nbInput
-                        formControlName="price"
-                      />
-                    </nb-form-field>
+            <div class="flex-form mg-top-16">
+              <nb-form-field class="center-form">
+                <label class="bold" for="price">Preço</label>
+                <input
+                  placeholder="Preço"
+                  size="large"
+                  fullWidth=""
+                  type="text"
+                  (input)="formatValueWithBRL($event)"
+                  nbInput
+                  formControlName="price"
+                />
+              </nb-form-field>
 
-                    <nb-form-field class="center-form">
-                      <label class="bold" for="drawDate">Data do sorteio</label>
-                      <input
-                        placeholder="Data do sorteio"
-                        size="large"
-                        fullWidth=""
-                        type="date"
-                        autofocus=""
-                        nbInput
-                        formControlName="drawDate"
-                      />
-                    </nb-form-field>
-                  </div>
+              <nb-form-field class="center-form">
+                <label class="bold" for="drawDate">Data do sorteio</label>
+                <input
+                  placeholder="Data do sorteio"
+                  size="large"
+                  fullWidth=""
+                  type="date"
+                  autofocus=""
+                  nbInput
+                  formControlName="drawDate"
+                />
+              </nb-form-field>
+            </div>
 
-                  <div class="flex-form mg-top-16">
-                    <div class="card-select">
-                      <label class="bold" for="prizeDraw">Sorteio via</label>
-                      <p-select
-                        formControlName="prizeDraw"
-                        [options]="prizeDraw"
-                        placeholder="Sorteio via"
-                        class="w-full"
-                      />
-                    </div>
+            <div class="flex-form mg-top-16">
+              <div class="card-select">
+                <label class="bold" for="prizeDraw">Sorteio via</label>
+                <p-select
+                  formControlName="prizeDraw"
+                  [options]="prizeDraw"
+                  placeholder="Sorteio via"
+                  class="w-full"
+                />
+              </div>
 
-                    <div class="card-select">
-                      <label class="bold" for="fileTickets"
-                        >Qtde de bilhetes</label
-                      >
-                      <p-select
-                        formControlName="fileTickets"
-                        [options]="qtdRaffles"
-                        placeholder="Qtde de bilhetes"
-                        class="w-full"
-                      />
-                    </div>
-                  </div>
-                </p-tabpanel>
-                <p-tabpanel value="1">
-                  @if(itemsAwards.length) { @for (item of itemsAwards; track
-                  $index) {
-                  <p-chip
-                    [label]="item"
-                    [removable]="true"
-                    (onRemove)="removeAwards(item)"
-                  />
-                  } }
+              <div class="card-select">
+                <label class="bold" for="fileTickets">Qtde de bilhetes</label>
+                <p-select
+                  formControlName="fileTickets"
+                  [options]="qtdRaffles"
+                  placeholder="Qtde de bilhetes"
+                  class="w-full"
+                  [readonly]="headerModal === 'Editar campanha'"
+                />
+              </div>
+            </div>
 
-                  <div class="flex justify-end mg-top-16">
-                    <p-button
-                      label="Adicionar prêmios"
-                      severity="info"
-                      (click)="visibleAwards = true"
-                    />
-                  </div>
+            <nb-form-field class="center-form mg-top-16">
+              <label class="bold" for="whatsApp">WhatsApp para suporte</label>
+              <input
+                placeholder="WhatsApp para suporte"
+                size="large"
+                fullWidth=""
+                type="text"
+                appPhoneMask
+                nbInput
+                formControlName="whatsApp"
+              />
+            </nb-form-field>
 
-                  <p-dialog
-                    header="Adicionar prêmio"
-                    [modal]="true"
-                    [(visible)]="visibleAwards"
-                    [style]="{ width: '25rem' }"
-                  >
-                    <div class="flex items-center gap-4 mb-4">
-                      <label for="award" class="font-semibold w-24"
-                        >Digite o nome do prêmio</label
-                      >
-                      <input
-                        type="text"
-                        #awardsInput
-                        pInputText
-                        id="award"
-                        class="flex-auto"
-                        autocomplete="off"
-                      />
-                    </div>
-                    <div class="flex justify-end gap-2">
-                      <p-button
-                        label="Cancelar"
-                        severity="secondary"
-                        (click)="visibleAwards = false"
-                      />
-                      <p-button
-                        label="Cadastrar"
-                        (click)="createAwards(awardsInput)"
-                      />
-                    </div>
-                  </p-dialog>
-                </p-tabpanel>
-                <p-tabpanel value="2">
-                  <nb-form-field class="center-form mg-top-16">
-                    <label class="bold" for="whatsApp"
-                      >WhatsApp para suporte</label
-                    >
-                    <input
-                      placeholder="WhatsApp para suporte"
-                      size="large"
-                      fullWidth=""
-                      type="text"
-                      appPhoneMask
-                      nbInput
-                      formControlName="whatsApp"
-                    />
-                  </nb-form-field>
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="showProgress" class="bold"
+                >Mostrar barra de progresso?</label
+              >
+              <p-toggleswitch formControlName="showProgress" />
+            </div>
 
-                  <div class="card flex justify-center border-none mg-top-16">
-                    <label for="showProgress" class="bold"
-                      >Mostrar barra de progresso?</label
-                    >
-                    <p-toggleswitch formControlName="showProgress" />
-                  </div>
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="showBuilders" class="bold"
+                >Mostrar ranking de compradores?</label
+              >
+              <p-toggleswitch formControlName="showBuilders" />
+            </div>
 
-                  <div class="card flex justify-center border-none mg-top-16">
-                    <label for="showBuilders" class="bold"
-                      >Mostrar ranking de compradores?</label
-                    >
-                    <p-toggleswitch formControlName="showBuilders" />
-                  </div>
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="favoriteRaffle" class="bold"
+                >Favoritar essa campanha?</label
+              >
+              <p-toggleswitch formControlName="favoriteRaffle" />
+            </div>
 
-                  <div class="card flex justify-center border-none mg-top-16">
-                    <label for="favoriteRaffle" class="bold"
-                      >Favoritar essa campanha?</label
-                    >
-                    <p-toggleswitch formControlName="favoriteRaffle" />
-                  </div>
-                </p-tabpanel>
-              </p-tabpanels>
-            </p-tabs>
+            <input type="hidden" formControlName="objectId" />
 
             <ng-template #footer>
               <p-button
                 label="Cancelar"
                 [text]="true"
                 severity="secondary"
-                (click)="visible = false"
+                (click)="resetForm()"
               />
-              <p-button label="Cadastrar" type="submit" severity="primary" />
+              <p-button
+                [label]="
+                  headerModal === 'Adicionar campanha'
+                    ? 'Criar campanha'
+                    : 'Editar campanha'
+                "
+                type="submit"
+                severity="primary"
+              />
             </ng-template>
           </p-dialog>
         </form>
@@ -318,6 +273,6 @@
   </nb-layout-column>
 </nb-layout>
 <ngx-loading
-    [show]="loading"
-    [config]="{ backdropBorderRadius: '3px' }"
-  ></ngx-loading>
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
