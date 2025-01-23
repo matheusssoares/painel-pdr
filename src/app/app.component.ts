@@ -13,6 +13,7 @@ import { PrimeNG } from 'primeng/config';
 import { Subscription } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { environment } from './environment';
 import { SharedModule } from './modules/shared.module';
 import { B4aServiceService } from './services/b4a-service.service';
 import { LocalStorageService } from './services/local-storage.service';
@@ -33,9 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private sub = inject(SubscriptionService);
   private subscriptions: Array<Subscription> = [];
 
-  constructor(
-    private primeng: PrimeNG
-  ) {}
+  constructor(private primeng: PrimeNG) {}
 
   ngOnInit(): void {
     this.primeng.ripple.set(true);
@@ -44,9 +43,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getConfig() {
-    this.b4aService.getConfig().subscribe((res) => {
-      if (res) {
-        this.localService.setItem('config', res);
+    const data = { nameProject: environment.nameProjectB4A };
+    this.b4aService.getConfig(data).subscribe((res: any) => {
+      console.log(res);
+      if (res.result.success) {
+        this.localService.setItem('config', res.result.data);
       }
     });
   }

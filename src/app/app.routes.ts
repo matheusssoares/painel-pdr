@@ -28,5 +28,13 @@ export const routes: Routes = [
         (m) => m.RafflesComponent
       ),
     title: `Papo de Rifa - Campanhas`,
-  }
+  },
+  {
+    path: 'admin/alerts',
+    loadComponent: () =>
+      import('./pages/admin/alerts/alerts.component').then(
+        (m) => m.AlertsComponent
+      ),
+    title: `Papo de Rifa - Comunicados`,
+  },
 ];

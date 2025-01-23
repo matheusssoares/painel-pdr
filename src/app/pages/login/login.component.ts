@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbGlobalPhysicalPosition } from '@nebular/theme';
+import { NgxLoadingModule } from 'ngx-loading';
 import { MessageService } from 'primeng/api';
 import { PrimeNgModule } from '../../modules/primeng.module';
 import { SharedModule } from '../../modules/shared.module';
@@ -17,7 +18,7 @@ import { TemplateService } from '../../services/template.service';
 
 @Component({
   selector: 'app-login',
-  imports: [SharedModule, ReactiveFormsModule, PrimeNgModule],
+  imports: [SharedModule, ReactiveFormsModule, PrimeNgModule, NgxLoadingModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   providers: [TemplateService, MessageService],
@@ -43,7 +44,11 @@ export class LoginComponent implements OnInit {
     const config: any = this.localService.getItem('config');
     if (config) {
       const configJson = JSON.parse(config);
+      console.log(configJson);
+      
       this.logo = configJson.image.url;
+    } else {
+      this.logo = "https://parsefiles.back4app.com/um4uYNQErQqajOI5i5mtKzsGknk3ywb5fggFqMS8/dea0d661fd9ee21ba1a75d3a6f5fa547_logo.png"
     }
 
     this.getSection();

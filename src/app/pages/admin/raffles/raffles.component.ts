@@ -15,7 +15,7 @@ import {
 } from '@angular/forms';
 import { format, parseISO } from 'date-fns';
 import { NgxLoadingModule } from 'ngx-loading';
-import { Confirmation, ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Editor } from 'primeng/editor';
 import { Table } from 'primeng/table';
 import Swal from 'sweetalert2';
@@ -53,7 +53,6 @@ interface UploadEvent {
 })
 export class RafflesComponent implements OnInit {
   @ViewChild('dt1') dt: Table | undefined;
-  @ViewChild('dt') cd: Confirmation | any;
   private b4aService = inject(B4aServiceService);
   private subService = inject(SubscriptionService);
   items: any[] = [];
@@ -86,7 +85,6 @@ export class RafflesComponent implements OnInit {
     private fb: FormBuilder,
     private currencyPipe: CurrencyPipe,
     private cdr: ChangeDetectorRef,
-    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -104,7 +102,6 @@ export class RafflesComponent implements OnInit {
   getData() {
     this.b4aService.getRaffles().subscribe((res: any) => {
       this.items = res.result.data;
-      console.log(this.items);
     });
   }
   initialForm() {

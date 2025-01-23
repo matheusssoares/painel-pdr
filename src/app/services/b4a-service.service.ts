@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../environment';
-import { B4aModelConfig } from '../models/b4a.model';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -11,17 +10,21 @@ export class B4aServiceService {
   localStorageService = inject(LocalStorageService);
   constructor(private httpClient: HttpClient) {}
 
-  getConfig() {
+  getConfig(data: any) {
+    console.log(data);
+    
     const headerOptions = {
       headers: {
         'X-Parse-Application-Id': environment.b4appApplicationId,
         'X-Parse-REST-API-Key': environment.b4appRestApiKey,
       },
     };
-    return this.httpClient.get<B4aModelConfig>(
-      `${environment.baseUrl}parse/classes/configProject/${environment.idProject}`,
+
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/getConfigProject`,
+      data,
       headerOptions
-    );
+    )
   }
 
   getMenu() {
@@ -48,6 +51,21 @@ export class B4aServiceService {
     };
     return this.httpClient.post(
       `${environment.baseUrl}parse/functions/getRaffles`,
+      {},
+      headerOptions
+    );
+  }
+
+  //get comunicados
+  getAlerts() {
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey,
+      },
+    };
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/getAlerts`,
       {},
       headerOptions
     );
@@ -85,6 +103,36 @@ export class B4aServiceService {
     };
     return this.httpClient.post(
       `${environment.baseUrl}parse/functions/deleteRaffle`,
+      data,
+      headerOptions
+    );
+  }
+
+  actionAlert(data: any, action: 'create' | 'update' ) {
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey
+      },
+    };
+
+    let url = action === 'create' ? 'createAlert' : 'updateAlert';
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/${url}`,
+      data,
+      headerOptions
+    );
+  }
+
+  deleteAlert(data: any) {
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey
+      },
+    };
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/deleteAlert`,
       data,
       headerOptions
     );
