@@ -21,7 +21,10 @@ import { SharedModule } from '../../../modules/shared.module';
 import { B4aServiceService } from '../../../services/b4a-service.service';
 import { SubscriptionService } from '../../../services/subscription.service';
 import { TemplateService } from '../../../services/template.service';
-
+interface UploadEvent {
+  originalEvent: Event;
+  files: File[];
+}
 @Component({
   selector: 'app-alerts',
   imports: [
@@ -45,6 +48,8 @@ export class AlertsComponent implements OnInit {
   visible: boolean = false;
   loading = false;
   @ViewChild('dt1') dt: Table | undefined;
+  uploadedFiles: Array<any> = [];
+
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
@@ -88,19 +93,26 @@ export class AlertsComponent implements OnInit {
       this.initialForm();
       this.headerModal = 'Adicionar comunicado';
     }
+    this.uploadedFiles = [];
     this.visible = true;
   }
 
-  save() {
+  async save() {
     this.loading = true;
     this.visible = false;
 
     const data = this.form.value;
+    if (this.uploadedFiles.length > 0) {
+      data.typeFile = this.uploadedFiles[0].type;
+      const strbase64 = await this.convertFileToBase64(this.uploadedFiles[0]);
+      data.image = `data:image/jpeg;base64,${strbase64}`;
+    }
 
     if (data.objectId) {
       this.b4aService.actionAlert(data, 'update').subscribe((res: any) => {
         this.loading = false;
         if (res.result.success) {
+          this.uploadedFiles = [];
           this.subService.setUpdateTemplate('update_template');
           this.templateService.showMessage(
             'success',
@@ -119,6 +131,7 @@ export class AlertsComponent implements OnInit {
       this.b4aService.actionAlert(data, 'create').subscribe((res: any) => {
         this.loading = false;
         if (res.result.success) {
+          this.uploadedFiles = [];
           this.subService.setUpdateTemplate('update_template');
           this.templateService.showMessage(
             'success',
@@ -174,5 +187,25 @@ export class AlertsComponent implements OnInit {
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt?.filterGlobal($event.target.value, stringVal);
+  }
+
+  onUpload(event: UploadEvent) {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+  }
+  convertFileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // Remove o prefixo data:<type>;base64,
+        resolve(base64String);
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file); // Lê o arquivo como URL de dados (Base64)
+    });
+  }
+  openImage(url: string) {
+    window.open(url, '_blank');
   }
 }
