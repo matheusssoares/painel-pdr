@@ -27,7 +27,8 @@ import {
   NbTimepickerModule,
   NbToastrModule,
   NbToastrService,
-  NbToggleModule
+  NbToggleModule,
+  NbUserModule
 } from '@nebular/theme';
 @NgModule({
   declarations: [],
@@ -55,7 +56,8 @@ import {
     NbToggleModule,
     NbTagModule,
     NbBadgeModule,
-    NbActionsModule
+    NbActionsModule,
+    NbUserModule
   ],
   exports: [
     NbSidebarModule,
@@ -77,7 +79,8 @@ import {
     NbToggleModule,
     NbTagModule,
     NbBadgeModule,
-    NbActionsModule
+    NbActionsModule,
+    NbUserModule
   ],
   providers: [
     NbThemeService,

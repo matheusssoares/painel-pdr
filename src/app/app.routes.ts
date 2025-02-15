@@ -37,4 +37,12 @@ export const routes: Routes = [
       ),
     title: `Papo de Rifa - Comunicados`,
   },
+  {
+    path: 'admin/support',
+    loadComponent: () =>
+      import('./pages/admin/support/support.component').then(
+        (m) => m.SupportComponent
+      ),
+    title: `Papo de Rifa - Suporte`,
+  }
 ];
