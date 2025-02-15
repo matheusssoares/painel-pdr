@@ -44,5 +44,21 @@ export const routes: Routes = [
         (m) => m.SupportComponent
       ),
     title: `Papo de Rifa - Suporte`,
+  },
+  {
+    path: 'admin/purchase',
+    loadComponent: () =>
+      import('./pages/admin/purchase/purchase.component').then(
+        (m) => m.PurchaseComponent
+      ),
+    title: `Papo de Rifa - Pedidos`,
+  },
+  {
+    path: 'admin/reports',
+    loadComponent: () =>
+      import('./pages/admin/reports/reports.component').then(
+        (m) => m.ReportsComponent
+      ),
+    title: `Papo de Rifa - Relatórios`,
   }
 ];

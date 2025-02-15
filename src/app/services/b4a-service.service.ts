@@ -180,4 +180,18 @@ export class B4aServiceService {
       headerOptions
     )
   }
+
+  getPurchases() {
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey
+      },
+    }
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/getPurchase`,
+      {},
+      headerOptions
+    )
+  }
 }

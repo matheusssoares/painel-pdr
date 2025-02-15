@@ -45,7 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
   getConfig() {
     const data = { nameProject: environment.nameProjectB4A };
     this.b4aService.getConfig(data).subscribe((res: any) => {
-      console.log(res);
       if (res.result.success) {
         this.localService.setItem('config', res.result.data);
       }
