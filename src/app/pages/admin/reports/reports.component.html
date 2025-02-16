@@ -1,1 +1,62 @@
-<p>reports works!</p>
+<nb-layout>
+  <nb-layout-column>
+    <nb-card class="container-card">
+      <nb-card-header class="card-head-pages">
+        <h4>RELATÓRIOS</h4>
+      </nb-card-header>
+
+      <!-- FILTROS -->
+      <nb-card-body class="example-items-col beetwen">
+        <div class="row">
+          <label for="">Selecione a campanha</label><br />
+          <nb-select placeholder="Selecione a campanha" size="large">
+            <nb-option value="1">Option 1</nb-option>
+            <nb-option value="2">Option 2</nb-option>
+            <nb-option value="3">Option 3</nb-option>
+            <nb-option value="4">Option 4</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="row">
+          <label for="">Selecione o status</label><br />
+          <nb-select placeholder="Selecione a campanha" size="large">
+            <nb-option value="1">Option 1</nb-option>
+            <nb-option value="2">Option 2</nb-option>
+            <nb-option value="3">Option 3</nb-option>
+          </nb-select>
+        </div>
+
+        <div class="row">
+          <label for="">Data inicial</label><br />
+          <input
+            nbInput
+            placeholder="Pick Date Range"
+            [nbDatepicker]="formpicker"
+            size="large"
+          />
+          <nb-rangepicker #formpicker></nb-rangepicker>
+        </div>
+
+        <div class="row">
+          <label for="">Data final</label><br />
+          <input
+            nbInput
+            placeholder="Pick Date Range"
+            [nbDatepicker]="formpicker2"
+            size="large"
+          />
+          <nb-rangepicker #formpicker2></nb-rangepicker>
+        </div>
+
+        <div class="row">
+          <label for="">Selecione o tipo de relatório</label><br />
+          <nb-select placeholder="Selecione o tipo de relatório" size="large">
+            <nb-option value="1">Option 1</nb-option>
+            <nb-option value="2">Option 2</nb-option>
+            <nb-option value="3">Option 3</nb-option>
+          </nb-select>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>
