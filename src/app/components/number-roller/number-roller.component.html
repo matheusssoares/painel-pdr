@@ -1,0 +1,19 @@
+<div class="number-scroll-container">
+  <table class="table-ganhador">
+    <h1 [countUp]="number" [options]="options">0</h1>
+    <tr>
+      <td><strong>Campanha:</strong></td>
+      <td><strong>Ganhador:</strong></td>
+      <td><strong>CPF:</strong></td>
+      <td><strong>Telefone:</strong></td>
+      <td><strong>Data da compra:</strong></td>
+    </tr>
+    <tr>
+      <td>{{ idRaffle }}</td>
+      <td class="text-uppercase">{{ nameUser }}</td>
+      <td>{{ cpf }}</td>
+      <td>{{ phone }}</td>      
+      <td>{{ createdAt | date : "dd/MM/yyyy" }} às {{ createdAt | date : "HH:mm" }}</td>      
+    </tr>
+  </table>
+</div>

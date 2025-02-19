@@ -1,0 +1,94 @@
+<nb-layout>
+  <nb-layout-column>
+    <p-toast />
+    <nb-card class="container-card">
+      <nb-card-header class="card-head-pages">
+        <h4>SORTEADOR ONLINE</h4>
+      </nb-card-header>
+      @if (displayForm) {
+      <nb-card-body class="example-items-col beetwen">
+        <div class="row">
+          <label for="">Selecione a campanha</label><br />
+          <nb-select
+            [(ngModel)]="selectedCampaign"
+            placeholder="Selecione a campanha"
+            size="large"
+          >
+            @for (item of items; track $index) {
+            <nb-option class="text-uppercase" [value]="item.objectId">
+              {{ item.name }}
+            </nb-option>
+            }
+          </nb-select>
+        </div>
+
+        <div class="row">
+          <label for="">Qtde de bilhetes sorteados</label><br />
+          <input
+            [(ngModel)]="ticketQuantity"
+            placeholder="Qtde de bilhetes sorteados"
+            size="large"
+            fullWidth=""
+            type="number"
+            min="1"
+            nbInput
+          />
+        </div>
+
+        <div class="row">
+          <label for=""></label><br />
+          <button
+            (click)="generateTickets()"
+            nbButton
+            status="primary"
+            size="large"
+            [disabled]="!isFormValid()"
+          >
+            Sortear
+          </button>
+        </div>
+      </nb-card-body>
+      } @if (!displayForm) {
+      <div class="lista-sorteados">
+        @for (item of data; track $index) {
+        <div class="sorteador">
+          <div class="infos">
+            <div class="ganhador">
+              <p>Ganhador: <strong> 01 </strong></p>
+            </div>
+            <div class="premios">
+              <strong>{{$index + 1}}º Prêmio </strong>
+            </div>
+          </div>
+          <app-number-roller
+            [createdAt]="item.item.createdAt"
+            [idRaffle]="item.item.idRaffle"
+            [nameUser]="item.item.nameUser"
+            [cpf]="item.item.cpf"
+            [phone]="item.item.phone"
+            [duration]="2"
+            [number]="item.selectedTicket"
+          ></app-number-roller>
+        </div>
+        }
+      </div>
+      }
+
+      <p-dialog
+        [(visible)]="visible"
+        [modal]="true"
+        [style]="{ width: '45rem' }"
+      >
+        <div class="animation">
+          @if (visible) {
+          <ng-lottie
+            height="300px"
+            [options]="options"
+            (complete)="finallyEvent()"
+          />
+          }
+        </div>
+      </p-dialog>
+    </nb-card>
+  </nb-layout-column>
+</nb-layout>

@@ -68,7 +68,7 @@
                   alt=""
                 />
               </td>
-              <td class="uppercase">{{ items.name }}</td>
+              <td class="text-uppercase">{{ items.name }}</td>
               <td>{{ items.price | currency : "BRL" }}</td>
               <td>{{ items.status }}</td>
               <td>
@@ -100,6 +100,15 @@
                     <nb-icon icon="trash-2-outline"></nb-icon>
                   </button>
                 </span>
+                @if (items.status === 2) {
+                  <span>
+                    <button 
+                     (click)="openDetails(items)" 
+                    nbButton ghost status="success">
+                      <nb-icon icon="search-outline"></nb-icon>
+                    </button>
+                  </span>
+                }
               </td>
             </tr>
           </ng-template>

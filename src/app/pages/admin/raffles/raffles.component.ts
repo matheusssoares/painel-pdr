@@ -297,4 +297,9 @@ export class RafflesComponent implements OnInit {
       }
     });
   }
+
+  openDetails(item: any) {
+    console.log(item);
+  }
+    
 }

@@ -42,7 +42,7 @@ export class B4aServiceService {
     );
   }
 
-  getRaffles() {
+  getRaffles(isActive: boolean = false) {
     const headerOptions = {
       headers: {
         'X-Parse-Application-Id': environment.b4appApplicationId,
@@ -51,7 +51,7 @@ export class B4aServiceService {
     };
     return this.httpClient.post(
       `${environment.baseUrl}parse/functions/getRaffles`,
-      {},
+      { isActive },
       headerOptions
     );
   }
@@ -191,6 +191,21 @@ export class B4aServiceService {
     return this.httpClient.post(
       `${environment.baseUrl}parse/functions/getPurchase`,
       {},
+      headerOptions
+    )
+  }
+
+  generateTickets(objectId: string, quantity: number = 1) {
+    const data = { objectId, quantity };
+    const headerOptions = {
+      headers: {
+        'X-Parse-Application-Id': environment.b4appApplicationId,
+        'X-Parse-REST-API-Key': environment.b4appRestApiKey
+      },
+    }
+    return this.httpClient.post(
+      `${environment.baseUrl}parse/functions/generateTickets`,
+      data,
       headerOptions
     )
   }

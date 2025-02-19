@@ -60,5 +60,13 @@ export const routes: Routes = [
         (m) => m.ReportsComponent
       ),
     title: `Papo de Rifa - Relatórios`,
+  },
+  {
+    path: 'admin/raffle-maker',
+    loadComponent: () =>
+      import('./pages/admin/raffle-maker/raffle-maker.component').then(
+        (m) => m.RaffleMakerComponent
+      ),
+    title: `Papo de Rifa - Sorteador de Campanhas`,
   }
 ];
