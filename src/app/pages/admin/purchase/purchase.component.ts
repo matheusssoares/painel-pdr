@@ -27,7 +27,6 @@ export class PurchaseComponent implements OnInit {
   ngOnInit(): void {
     const sub = this.b4aService.getPurchases().subscribe((res: any) => {
       if (res.result.success) {
-        console.log(res);
         this.items = res.result.data;
         this.loading = false;
       }

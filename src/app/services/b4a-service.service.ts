@@ -10,9 +10,7 @@ export class B4aServiceService {
   localStorageService = inject(LocalStorageService);
   constructor(private httpClient: HttpClient) {}
 
-  getConfig(data: any) {
-    console.log(data);
-    
+  getConfig(data: any) {    
     const headerOptions = {
       headers: {
         'X-Parse-Application-Id': environment.b4appApplicationId,

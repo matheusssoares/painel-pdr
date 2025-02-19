@@ -19,6 +19,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Editor } from 'primeng/editor';
 import { Table } from 'primeng/table';
 import Swal from 'sweetalert2';
+import { NumberRollerComponent } from '../../../components/number-roller/number-roller.component';
 import { PhoneMaskDirective } from '../../../directives/phone-mask.directive';
 import { PrimeNgModule } from '../../../modules/primeng.module';
 import { SharedModule } from '../../../modules/shared.module';
@@ -41,6 +42,7 @@ interface UploadEvent {
     PhoneMaskDirective,
     NgxLoadingModule,
     FormsModule,
+    NumberRollerComponent
   ],
   templateUrl: './raffles.component.html',
   styleUrl: './raffles.component.scss',
@@ -81,6 +83,8 @@ export class RafflesComponent implements OnInit {
   ];
   loading: boolean = false;
   private templateService = inject(TemplateService);
+  itemSelected: any = null;
+  visibleDetails: boolean = false;
   constructor(
     private fb: FormBuilder,
     private currencyPipe: CurrencyPipe,
@@ -299,7 +303,14 @@ export class RafflesComponent implements OnInit {
   }
 
   openDetails(item: any) {
-    console.log(item);
+    this.itemSelected = item;
+    this.itemSelected.selectedTickets = this.itemSelected.selectedTickets.map((item: any) => {
+    return {
+      ...item,
+      number: parseInt(item.number)
+    }
+    })
+    this.visibleDetails = true;
   }
     
 }

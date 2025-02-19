@@ -278,6 +278,42 @@
         </form>
       </div>
       <!-- END DISPLAY MODAL -->
+
+      <!-- DISPLAY MODAL DETAILS -->
+      <div class="card">
+        <p-dialog
+          [(visible)]="visibleDetails"
+          [header]="'Detalhes da campanha'"
+          closeicon="pi pi-times"
+          [modal]="true"
+          [style]="{ width: '65rem' }"
+        >
+        <div class="lista-sorteados">
+          @for (item of itemSelected?.selectedTickets; track $index) {
+          <div class="sorteador">
+            <div class="infos">
+              <div class="ganhador">
+                <p>Ganhador: <strong> 01 </strong></p>
+              </div>
+              <div class="premios">
+                <strong>{{$index + 1}}º Prêmio </strong>
+              </div>
+            </div>
+            <app-number-roller
+              [createdAt]="item.createdAt.iso"
+              [idRaffle]="item.idRaffle"
+              [nameUser]="item.nameUser"
+              [cpf]="item.cpf"
+              [phone]="item.phone"
+              [duration]="2"
+              [number]="item.number"
+            ></app-number-roller>
+          </div>
+          }
+        </div>
+         </p-dialog>
+      </div>
+      <!-- END DISPLAY MODAL DETAILS -->
     </nb-card>
   </nb-layout-column>
 </nb-layout>

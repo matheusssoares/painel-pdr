@@ -17,8 +17,6 @@ export class NumberRollerComponent implements OnInit {
   @Input() phone: string = '';
   @Input() createdAt: Date = new Date();
   ngOnInit(): void {
-    console.log(this.idRaffle, this.nameUser, this.cpf, this.phone);
-
     const formattedNumber = this.number.toString().padStart(6, '0');
     const prefix = formattedNumber.slice(0, 6 - this.number.toString().length);
 

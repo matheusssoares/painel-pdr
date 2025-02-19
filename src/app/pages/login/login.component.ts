@@ -43,9 +43,7 @@ export class LoginComponent implements OnInit {
 
     const config: any = this.localService.getItem('config');
     if (config) {
-      const configJson = JSON.parse(config);
-      console.log(configJson);
-      
+      const configJson = JSON.parse(config);      
       this.logo = configJson.image.url;
     } else {
       this.logo = "https://parsefiles.back4app.com/um4uYNQErQqajOI5i5mtKzsGknk3ywb5fggFqMS8/dea0d661fd9ee21ba1a75d3a6f5fa547_logo.png"
