@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { ChartModule } from 'primeng/chart';
 import { ChipModule } from 'primeng/chip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -39,7 +40,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
     ToggleSwitchModule,
     MessageModule,
     ConfirmDialogModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    ChartModule
   ],
   exports: [
     TableModule,
@@ -60,7 +62,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
     ToggleSwitchModule,
     MessageModule,
     ConfirmDialogModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    ChartModule
   ],
 })
 export class PrimeNgModule {}
