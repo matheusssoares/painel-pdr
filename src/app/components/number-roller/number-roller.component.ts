@@ -16,12 +16,13 @@ export class NumberRollerComponent implements OnInit {
   @Input() cpf: string = '';
   @Input() phone: string = '';
   @Input() createdAt: Date = new Date();
-  ngOnInit(): void {
+  ngOnInit(): void {    
     const formattedNumber = this.number.toString().padStart(6, '0');
     const prefix = formattedNumber.slice(0, 6 - this.number.toString().length);
 
     this.options = {
       prefix,
+      separator: '.',
     };
   }
 }

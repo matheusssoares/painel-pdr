@@ -28,6 +28,8 @@ export class PurchaseComponent implements OnInit {
     const sub = this.b4aService.getPurchases().subscribe((res: any) => {
       if (res.result.success) {
         this.items = res.result.data;
+        console.log(this.items);
+        
         this.loading = false;
       }
     });
