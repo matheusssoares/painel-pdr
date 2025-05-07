@@ -106,6 +106,8 @@ export class RafflesComponent implements OnInit {
   getData() {
     this.b4aService.getRaffles().subscribe((res: any) => {
       this.items = res.result.data;
+      console.log(this.items);
+      
     });
   }
   initialForm() {

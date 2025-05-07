@@ -37,8 +37,6 @@ export class ReportsComponent implements OnInit {
   }
 
   selectCampaign(item: any) {
-    console.log(item);
-
     this.loading = true;
     let qtdeBilhetes = +item.fileTickets.split('.')[0].replace(/[^0-9]/g, '');
     this.b4aService.getReports(item.objectId).subscribe((res: any) => {

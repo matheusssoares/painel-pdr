@@ -7,4 +7,5 @@ export const environment = {
     b4appRestApiKey: "L4FrRad5tgryCyN7SioOPnZwrAJ2AYxWkKYp2FP4",
     idProject: "svbc1wRGnn",
     nameProjectB4A: "Painel - Papo de Rifa",
+    urlFirebase: "http://127.0.0.1:5001/papo-de-rifa/us-central1/"
 }
