@@ -16,4 +16,8 @@ export class FirebaseService {
   getUsers() {
     return this.httpClient.get(`${environment.urlFirebase}getUsers`);
   }
+
+  updateUser(data: any) {
+    return this.httpClient.post(`${environment.urlFirebase}updateUser`, data);
+  }
 }

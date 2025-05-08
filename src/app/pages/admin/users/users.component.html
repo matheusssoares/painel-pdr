@@ -8,6 +8,163 @@
           <nb-icon icon="plus-outline"></nb-icon> Adicionar
         </button>
       </nb-card-header>
+
+      <!-- DISPLAY TABLE WITH DATA PERSONALIZATION -->
+      <div class="container-table">
+        <p-table
+          #dt1
+          dataKey="id"
+          [value]="items"
+          styleClass="p-datatable-striped"
+          [tableStyle]="{ 'min-width': '75rem', 'background-color': '#fff' }"
+          [paginator]="true"
+          [rows]="100"
+          [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[100, 150, 200, 250]"
+          currentPageReportTemplate="Mostrando {first} de {last} de {totalRecords} registros"
+          [globalFilterFields]="['name', 'email', 'cpf', 'isColaborator']"
+        >
+          <ng-template pTemplate="caption" class="caption">
+            <div class="flex">
+              <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input
+                  class="input-search"
+                  pInputText
+                  type="text"
+                  (input)="applyFilterGlobal($event, 'contains')"
+                  placeholder="Pesquisar"
+                />
+              </span>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr class="mg-top-16 padding-16 h-table">
+              <th pSortableColumn="name">
+                NOME <p-sortIcon field="name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="email">
+                E-MAIL <p-sortIcon field="email"></p-sortIcon>
+              </th>
+              <th pSortableColumn="cpf">
+                CPF <p-sortIcon field="cpf"></p-sortIcon>
+              </th>
+              <th pSortableColumn="isColaborator">
+                COLABORADOR <p-sortIcon field="isColaborator"></p-sortIcon>
+              </th>
+              <th>AÇÕES</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-items>
+            <tr>
+              <td class="mg-left-16">
+                {{ items.name }}
+              </td>
+              <td>{{ items.email }}</td>
+              <td>{{ items.cpf }}</td>
+              <td>
+                @if (items.isColaborator) {
+                <span class="badge badge-success">SIM</span>
+                } @else {
+                <span class="badge badge-danger">NÃO</span>
+                }
+              </td>
+              <td>
+                @if (!items.isColaborator) {
+                  <span>
+                    <button
+                      (click)="openModal(true, items)"
+                      nbButton
+                      ghost
+                      status="primary"
+                    >
+                      <nb-icon icon="edit-2-outline"></nb-icon>
+                    </button>
+                  </span>
+                }
+                
+               
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!-- END DISPLAY TABLE WITH DATA PERSONALIZATION -->
+
+      <!-- DISPLAY MODAL -->
+      <div class="card">
+        <form [formGroup]="form" (ngSubmit)="save()">
+          <p-dialog
+            [(visible)]="visible"
+            [header]="'Adicionar colaboradores'"
+            closeicon="pi pi-times"
+            [modal]="true"
+            [style]="{ width: '45rem' }"
+          >
+            
+            <nb-form-field class="center-form mg-top-16">
+              <label class="bold" for="regulation">Nome completo</label>
+              <input
+                placeholder="Nome completo"
+                size="large"
+                fullWidth=""
+                type="text"
+                autofocus=""
+                nbInput
+                formControlName="name"
+              />
+            </nb-form-field>
+
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="showProgress" class="bold"
+                >Marcar como colaborador?</label
+              >
+              <p-toggleswitch formControlName="isColaborator" />
+            </div>
+            
+
+            <div class="flex-form mg-top-16">
+              <nb-form-field class="center-form">
+                <label class="bold" for="price">Código de colaborador</label>
+                <input
+                  placeholder="Código"
+                  size="large"
+                  fullWidth=""
+                  type="number"
+                  nbInput
+                  formControlName="codeColaborator"
+                />
+              </nb-form-field>
+            </div>
+
+            <input type="hidden" formControlName="id" />
+
+            <ng-template #footer>
+              <p-button
+                label="Cancelar"
+                [text]="true"
+                severity="secondary"
+                (click)="resetForm()"
+              />
+              <p-button
+                [label]="
+                 'Salvar'
+                "
+                [disabled]="!form.valid"
+                type="submit"
+                severity="primary"
+              />
+            </ng-template>
+          </p-dialog>
+        </form>
+      </div>
+      <!-- END DISPLAY MODAL -->
+
     </nb-card>
   </nb-layout-column>
 </nb-layout>
+<ngx-loading
+  [show]="loading"
+  [config]="{ backdropBorderRadius: '3px' }"
+></ngx-loading>
