@@ -13,6 +13,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
+import { PickListModule } from 'primeng/picklist';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
@@ -41,7 +42,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
     MessageModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
-    ChartModule
+    ChartModule,
+    PickListModule
   ],
   exports: [
     TableModule,
@@ -63,7 +65,8 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
     MessageModule,
     ConfirmDialogModule,
     ConfirmPopupModule,
-    ChartModule
+    ChartModule,
+    PickListModule
   ],
 })
 export class PrimeNgModule {}

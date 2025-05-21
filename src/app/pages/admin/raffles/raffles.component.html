@@ -50,7 +50,7 @@
                 PREÇO <p-sortIcon field="price"></p-sortIcon>
               </th>
               <th pSortableColumn="price">
-                % DE VENDAS <p-sortIcon field="price"></p-sortIcon>
+                COLABORADORES <p-sortIcon field="price"></p-sortIcon>
               </th>
               <th pSortableColumn="status">
                 STATUS <p-sortIcon field="status"></p-sortIcon>
@@ -70,7 +70,12 @@
               </td>
               <td class="text-uppercase">{{ items.name }}</td>
               <td>{{ items.price | currency : "BRL" }}</td>
-              <td>{{ items.status }}</td>
+              <td>
+                @if (items.allowCollaborator) {
+                <span class="badge badge-success">SIM</span>
+                } @else {
+                <span class="badge badge-danger">NÃO</span>}
+              </td>
               <td>
                 @switch (items.status) { @case (0) {
                 <span class="badge badge-success">ATIVA</span>
@@ -94,20 +99,26 @@
                   </button>
                 </span>
                 <span>
-                  <button 
-                   (click)="deleteItem(items.objectId)" 
-                  nbButton ghost status="danger">
+                  <button
+                    (click)="deleteItem(items.objectId)"
+                    nbButton
+                    ghost
+                    status="danger"
+                  >
                     <nb-icon icon="trash-2-outline"></nb-icon>
                   </button>
                 </span>
                 @if (items.status === 2) {
-                  <span>
-                    <button 
-                     (click)="openDetails(items)" 
-                    nbButton ghost status="success">
-                      <nb-icon icon="search-outline"></nb-icon>
-                    </button>
-                  </span>
+                <span>
+                  <button
+                    (click)="openDetails(items)"
+                    nbButton
+                    ghost
+                    status="success"
+                  >
+                    <nb-icon icon="search-outline"></nb-icon>
+                  </button>
+                </span>
                 }
               </td>
             </tr>
@@ -255,6 +266,34 @@
               <p-toggleswitch formControlName="favoriteRaffle" />
             </div>
 
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="favoriteRaffle" class="bold">Aceitar doações?</label>
+              <p-toggleswitch formControlName="donation" />
+            </div>
+
+            <div class="card flex justify-center border-none mg-top-16">
+              <label for="favoriteRaffle" class="bold"
+                >Permitir vendas por colaborador?</label
+              >
+              <p-toggleswitch formControlName="allowCollaborator" />
+            </div>
+
+            @if (this.form.get('allowCollaborator')?.value) {
+            <p-picklist
+              [source]="sourceCollaborators"
+              [target]="targetCollaborators"
+              [dragdrop]="true"
+              [responsive]="true"
+              [sourceStyle]="{ height: '30rem' }"
+              [targetStyle]="{ height: '30rem' }"
+              breakpoint="1400px"
+            >
+              <ng-template let-item #item>
+                {{ item.name }}
+              </ng-template>
+            </p-picklist>
+            }
+
             <input type="hidden" formControlName="objectId" />
 
             <ng-template #footer>
@@ -288,30 +327,30 @@
           [modal]="true"
           [style]="{ width: '65rem' }"
         >
-        <div class="lista-sorteados">
-          @for (item of itemSelected?.selectedTickets; track $index) {
-          <div class="sorteador">
-            <div class="infos">
-              <div class="ganhador">
-                <p>Ganhador: <strong> 01 </strong></p>
+          <div class="lista-sorteados">
+            @for (item of itemSelected?.selectedTickets; track $index) {
+            <div class="sorteador">
+              <div class="infos">
+                <div class="ganhador">
+                  <p>Ganhador: <strong> 01 </strong></p>
+                </div>
+                <div class="premios">
+                  <strong>{{ $index + 1 }}º Prêmio </strong>
+                </div>
               </div>
-              <div class="premios">
-                <strong>{{$index + 1}}º Prêmio </strong>
-              </div>
+              <app-number-roller
+                [createdAt]="item.createdAt.iso"
+                [idRaffle]="item.idRaffle"
+                [nameUser]="item.nameUser"
+                [cpf]="item.cpf"
+                [phone]="item.phone"
+                [duration]="2"
+                [number]="item.number"
+              ></app-number-roller>
             </div>
-            <app-number-roller
-              [createdAt]="item.createdAt.iso"
-              [idRaffle]="item.idRaffle"
-              [nameUser]="item.nameUser"
-              [cpf]="item.cpf"
-              [phone]="item.phone"
-              [duration]="2"
-              [number]="item.number"
-            ></app-number-roller>
+            }
           </div>
-          }
-        </div>
-         </p-dialog>
+        </p-dialog>
       </div>
       <!-- END DISPLAY MODAL DETAILS -->
     </nb-card>

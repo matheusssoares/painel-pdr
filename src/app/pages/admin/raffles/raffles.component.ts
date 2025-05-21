@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -18,12 +19,14 @@ import { NgxLoadingModule } from 'ngx-loading';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Editor } from 'primeng/editor';
 import { Table } from 'primeng/table';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 import { NumberRollerComponent } from '../../../components/number-roller/number-roller.component';
 import { PhoneMaskDirective } from '../../../directives/phone-mask.directive';
 import { PrimeNgModule } from '../../../modules/primeng.module';
 import { SharedModule } from '../../../modules/shared.module';
 import { B4aServiceService } from '../../../services/b4a-service.service';
+import { FirebaseService } from '../../../services/firebase.service';
 import { SubscriptionService } from '../../../services/subscription.service';
 import { TemplateService } from '../../../services/template.service';
 
@@ -42,7 +45,7 @@ interface UploadEvent {
     PhoneMaskDirective,
     NgxLoadingModule,
     FormsModule,
-    NumberRollerComponent
+    NumberRollerComponent,
   ],
   templateUrl: './raffles.component.html',
   styleUrl: './raffles.component.scss',
@@ -53,10 +56,11 @@ interface UploadEvent {
     ConfirmationService,
   ],
 })
-export class RafflesComponent implements OnInit {
+export class RafflesComponent implements OnInit, OnDestroy {
   @ViewChild('dt1') dt: Table | undefined;
   private b4aService = inject(B4aServiceService);
   private subService = inject(SubscriptionService);
+  private firebaseService = inject(FirebaseService);
   items: any[] = [];
   globalFilterFields: string[] = ['name', 'price', 'drawDate', 'status'];
   visible: boolean = false;
@@ -85,10 +89,13 @@ export class RafflesComponent implements OnInit {
   private templateService = inject(TemplateService);
   itemSelected: any = null;
   visibleDetails: boolean = false;
+  sourceCollaborators: any[] = [];
+  targetCollaborators: any[] = [];
+  subscriptions: Subscription[] = [];
   constructor(
     private fb: FormBuilder,
     private currencyPipe: CurrencyPipe,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -104,11 +111,22 @@ export class RafflesComponent implements OnInit {
   }
 
   getData() {
-    this.b4aService.getRaffles().subscribe((res: any) => {
+    this.loading = true;
+    const sub = this.b4aService.getRaffles().subscribe((res: any) => {
       this.items = res.result.data;
-      console.log(this.items);
-      
     });
+
+    this.subscriptions.push(sub);
+
+    const sub2 = this.firebaseService.getUsers().subscribe((res: any) => {
+      if (res) {
+        const collaborators = res.filter((c: any) => c.isColaborator === true);
+        this.sourceCollaborators = collaborators;
+        this.loading = false;
+      }
+    });
+
+    this.subscriptions.push(sub2);
   }
   initialForm() {
     this.form = this.fb.group({
@@ -123,6 +141,8 @@ export class RafflesComponent implements OnInit {
       showProgress: [false],
       showBuilders: [false],
       favoriteRaffle: [false],
+      donation: [false],
+      allowCollaborator: [false],
       prizeDraw: ['Diretamente com o Organizador', [Validators.required]],
     });
   }
@@ -132,6 +152,14 @@ export class RafflesComponent implements OnInit {
   }
 
   openModal(isEdit: boolean = false, data: any = null) {
+    this.targetCollaborators = data.allCollaborators;
+
+    const targetIds = this.targetCollaborators.map((c: any) => c.id);
+
+    this.sourceCollaborators = this.sourceCollaborators.filter(
+      (c: any) => !targetIds.includes(c.id)
+    );
+
     if (isEdit) {
       this.form.reset();
       this.headerModal = 'Editar campanha';
@@ -168,6 +196,9 @@ export class RafflesComponent implements OnInit {
     const drawDateString = data.drawDate;
     data.drawDate = parseISO(drawDateString);
     data.price = parseFloat(data.price.replace(',', '.'));
+    data.collaborators = this.form.get('allowCollaborator')?.value
+      ? this.targetCollaborators
+      : [];
 
     if (this.uploadedFiles.length > 0) {
       data.typeFile = this.uploadedFiles[0].type;
@@ -306,13 +337,20 @@ export class RafflesComponent implements OnInit {
 
   openDetails(item: any) {
     this.itemSelected = item;
-    this.itemSelected.selectedTickets = this.itemSelected.selectedTickets.map((item: any) => {
-    return {
-      ...item,
-      number: parseInt(item.number)
-    }
-    })
+    this.itemSelected.selectedTickets = this.itemSelected.selectedTickets.map(
+      (item: any) => {
+        return {
+          ...item,
+          number: parseInt(item.number),
+        };
+      }
+    );
     this.visibleDetails = true;
   }
-    
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((data) => {
+      data?.unsubscribe();
+    });
+  }
 }
