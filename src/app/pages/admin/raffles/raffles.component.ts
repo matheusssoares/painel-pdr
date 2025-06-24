@@ -152,15 +152,14 @@ export class RafflesComponent implements OnInit, OnDestroy {
   }
 
   openModal(isEdit: boolean = false, data: any = null) {
-    this.targetCollaborators = data.allCollaborators;
-
-    const targetIds = this.targetCollaborators.map((c: any) => c.id);
-
-    this.sourceCollaborators = this.sourceCollaborators.filter(
-      (c: any) => !targetIds.includes(c.id)
-    );
-
     if (isEdit) {
+      this.targetCollaborators = data.allCollaborators;
+
+      const targetIds = this.targetCollaborators.map((c: any) => c.id);
+
+      this.sourceCollaborators = this.sourceCollaborators.filter(
+        (c: any) => !targetIds.includes(c.id)
+      );
       this.form.reset();
       this.headerModal = 'Editar campanha';
       this.form.patchValue(data);
